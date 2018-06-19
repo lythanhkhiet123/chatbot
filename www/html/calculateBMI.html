@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' gap:; style-src 'self' 'unsafe-inline'; media-src *" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="../css/calculateBMI.css" />
+    <title>Hello World</title>
+</head>
+
+<body>
+    <script type="text/javascript" src="../cordova.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+     <div id="header">
+        <h1>Chat Bot App</h1>
+        <h2>Calculate Body Mass Index</h2>
+        <hr>
+    </div>
+<!--    user login interface-->
+    <div id="loginInterface">
+        <div id='genderInterface'>
+            <img src='../img/male.png' id="maleImage">
+            <img src='../img/female.png' id="femaleImage">
+            <br>
+            <span id="male">Male:<input type="radio" name="gender" value='male' checked/></span>
+           <span id="female">Female:<input type="radio" name="gender"   value = 'female' /></span><br>
+            <span id="weight">Weight:<input type="range" min="1" max="100" value="50" id='weightInput'><span id="kg"></span> KG</span>
+            <br>
+            <span id="height">Height:<input type="range" min="1" max="230" value="160" id='heightInput'><span id="cm"></span> cm</span>
+            <hr>
+            <p>Result: <span id='result'></span></p>
+
+            <p>Last result: <span id='lastResult'></span></p>
+            <p><img src='../img/bmi.jpeg' width='100%'/></p>
+        </div>
+        <p><input type='button' value='Calculate' onclick='calculate()' id='calculate'/></p>
+        <p><input type='button' value='Back' onclick='back()' id='back'/></p>
+
+    </div>
+    <script>
+        var weight = document.getElementById('weightInput');
+        var kg = document.getElementById('kg');
+
+        kg.innerHTML = weight.value;    //the number on the right of the slider
+        weight.oninput = function() {
+          kg.innerHTML = this.value;
+        }
+        var height = document.getElementById('heightInput');
+
+        var cm = document.getElementById('cm');
+        cm.innerHTML = height.value;
+        height.oninput = function() {   //the number on the right of the slider
+          cm.innerHTML = this.value;
+        }
+
+
+
+    </script>
+    <script>
+
+
+        function calculate()
+        {
+            var gender = $('input[name=gender]:checked').val(); // get value of radio button
+            var weight = document.getElementById('weightInput').value;
+            var height = document.getElementById('heightInput').value;
+
+            var bmi = weight / ((height/100)*(height/100)); //bmi formulate
+
+            var result = document.getElementById('result');
+            bmi = bmi.toFixed(2); //round to 2 numbers 1.00
+            result.innerHTML = bmi;
+
+            var storage = window.localStorage;
+            var userID = storage.getItem('userLogin');
+            //use ajax to send data to server
+            $.ajax({
+                    type: "post",
+                    url: "https://ilovebilibili.000webhostapp.com/save_bmi.php",
+                    data : {gender,height,weight,bmi,userID},
+                    success: function (data, text) {
+                        alert(data);
+                        location.href='homepage.html';
+
+                    },
+                    error: function (request, status, error) {
+                        alert(request.responseText);
+                    }
+                });
+
+        }
+        function back()
+        {
+
+            location.href='homepage.html';
+
+        }
+    </script>
+
+
+    <script>
+        var storage = window.localStorage;
+        var userID = storage.getItem('userLogin');
+        $.ajax({
+                type: "post",
+                url: "https://ilovebilibili.000webhostapp.com/get_bmi.php", //get the last bmi result
+                data : {userID},
+                success: function (data) {
+                    var lastResult = document.getElementById('lastResult');
+                    lastResult.innerHTML = data;
+
+
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+    </script>
+
+
+</body>
+
+</html>

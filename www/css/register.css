@@ -1,0 +1,30 @@
+#loginInterface{
+    margin: auto;
+    width: 60%;
+    
+}
+#userText,#passText,#register,#login,#username,#password,#confirmText,#confirm,#back{
+    font-size: 25px;
+}
+
+#userText,#passText,#register,#back{
+    margin-left: 100px;
+}
+#confirmText{
+    
+    margin-left: 50px;
+}
+#register{
+    margin-left: 85px;
+}
+#back,#register{
+    margin-top: 40px;
+}
+#header{
+    text-align: center;
+    background-color:cadetblue;
+    color: white;
+}
+body{
+    background-color: antiquewhite;
+}

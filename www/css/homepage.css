@@ -1,0 +1,26 @@
+#header{
+    text-align: center;
+    background-color:cadetblue;
+    color: white;
+}
+body{
+    background-color: antiquewhite;
+}
+#exercises,#calculateBMI,#logout,#gallery,#chatbot{
+    font-size: 25px;
+  margin: auto;
+    width: 40%;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 20px;
+    color: aliceblue;
+    background-color: #d6a844;
+    text-align: center;
+    margin-left: 130px;
+    margin-top: 30px;
+
+}
+#loginInterface{
+
+
+}

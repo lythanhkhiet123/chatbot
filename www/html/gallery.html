@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' gap:; style-src 'self' 'unsafe-inline'; media-src *" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="../css/gallery.css" />
+    <title>Hello World</title>
+</head>
+
+<body>
+    <script type="text/javascript" src="../cordova.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+     <div id="header">
+        <h1>Chat Bot App</h1>
+        <h2>Gallery</h2>
+        <hr>
+    </div>
+<!--    user login interface-->
+    <div id="loginInterface">
+
+        <ul id="myImages">
+        </ul>
+
+        <div id='buttons'>
+            <p>
+                <input type='button' value='Back' onclick='back()' id='back'/>
+                <input type='button' value='Camera' onclick='camera()' id='camera'/>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function back()
+        {
+            location.href='homepage.html';
+        }
+
+        function camera()
+        {
+            //open camera
+            navigator.camera.getPicture(onSuccess, onFail, { quality: 50,
+            destinationType: Camera.DestinationType.FILE_URI });
+        }
+
+
+        function onSuccess(imageURI) {
+            // create an image and the date in the content
+            var storage = window.localStorage;
+            var userID = storage.getItem('userID');
+            var images = document.getElementById(('myImages'));
+            var img = document.createElement("img");
+            img.setAttribute('src',imageURI);
+            img.setAttribute('class',"myImage");
+
+            //image URI is the location of the file
+            var li = document.createElement("li");
+            images.appendChild(li);
+            var currentdate = new Date();
+            var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth()+1)  + "-" + currentdate.getDate();
+            var location = imageURI;
+            var captureDate = datetime;
+            var span = document.createElement('span');
+            var txt = document.createTextNode(captureDate);
+            //capture date is the current date when the picture is clicked
+            span.setAttribute('class','date');
+            span.appendChild(txt);
+
+            li.appendChild(span);
+            li.appendChild(img);
+
+            $.ajax({
+                type: "post",
+                url: "https://ilovebilibili.000webhostapp.com/save_photo.php", // save data to server
+                data : {location,captureDate, userID},
+                success: function (data, text) {
+                    alert(data);
+                },
+                error: function (request, status, error) {
+                    alert(request.responseText);
+                }
+            });
+          }
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
+    </script>
+    <script type="text/javascript">
+  document.addEventListener("deviceready", onDeviceReady, false);
+        // when the page is load, it will load all of the images of that user
+
+  function onDeviceReady()
+  {
+    var storage = window.localStorage;
+    var userID = storage.getItem('userID');
+    var location = new Array();
+    var captureDate = new Array();
+    $.ajax({
+        type: "post",
+        url: "https://ilovebilibili.000webhostapp.com/get_photo.php",
+        data : {userID},
+        success: function (data) {
+          var obj = JSON.parse(data); // extract the decode of JSON which been done in PHP
+          location = obj[0];
+          captureDate = obj[1];
+          for(var i=0; i<location.length;i++)
+          {
+              //create a list
+            var images = document.getElementById(('myImages'));
+
+            var img = document.createElement("img");
+            var span = document.createElement("span");
+            var txt = document.createTextNode(captureDate[i]);
+
+            span.setAttribute('class','date');
+
+            span.appendChild(txt);
+
+
+            img.setAttribute('src',location[i]);
+            img.setAttribute('class',"myImage");
+
+            var li = document.createElement("li");
+            li.appendChild(span);
+            li.appendChild(img);
+
+
+            images.appendChild(li);
+
+
+          }
+
+
+
+
+        },
+        error: function (request, status, error) {
+            alert(request.responseText);
+        }
+
+    });
+
+
+  }
+
+    </script>
+
+
+
+</body>
+
+</html>

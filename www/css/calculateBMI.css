@@ -1,0 +1,36 @@
+#header{
+    text-align: center;
+    background-color:cadetblue;
+    color: white;
+}
+body{
+    background-color: antiquewhite;
+}
+#back,#calculate{
+     font-size: 25px;
+  margin: auto;
+    width: 40%;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 20px;
+    color: aliceblue;
+    background-color: #d6a844;
+    text-align: center;
+    margin-left: 130px;
+    margin-top: 10px;
+}
+#maleImage,#femaleImage{
+    width:50px;
+}
+#femaleImage{
+   margin-left: 90px; 
+}
+#female{
+   margin-left: 70px; 
+}
+#maleImage{
+   margin-left: 30px; 
+}
+#male{
+   margin-left: 30px; 
+}

@@ -1,0 +1,37 @@
+#loginInterface{
+    margin: auto;
+    width: 60%;
+}
+#userText,#passText,#register,#login,#username,#password,#confirmText,#confirm{
+    font-size: 25px;
+}
+
+#userText,#passText,#register,#login,#back{
+    margin-left: 100px;
+}
+#confirmText{
+    
+    margin-left: 50px;
+}
+
+#header{
+    text-align: center;
+    background-color:cadetblue;
+    color: white;
+}
+body{
+    background-color: antiquewhite;
+}
+#login,#register{
+     font-size: 15px;
+    
+    width: 40%;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 20px;
+    color: aliceblue;
+    background-color: #d6a844;
+    text-align: center;
+    margin: auto;
+    margin-left: 60px;
+}
